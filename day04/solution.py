@@ -21,9 +21,11 @@ def count_valid_passport(data, vf=valid_fields):
         else:
             for f in vf:
                 if (f+":") not in p:
-                    invalid = invalid + 1
+                    invalid += 1
+                    break
+
             p=""
-            total = total + 1
+            total += 1
     return total - invalid
 
 
