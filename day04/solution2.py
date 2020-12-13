@@ -20,9 +20,8 @@ def str_to_person(s):
 
 
 def validate_person(p, vf):
-    for k in vf:
-        if k not in p:
-            return False
+    if set(p.keys()) != set(vf.keys()):
+        return False
     for k in p:
         if not vf[k](p[k]):
             return False
@@ -33,15 +32,14 @@ valid_fields2 = {
     "byr": lambda x: 1920 <= int(x) <= 2002,
     "iyr": lambda x: 2010 <= int(x) <= 2020,
     "eyr": lambda x: 2020 <= int(x) <= 2030,
-    "hgt": checkHeight ,
-    "hcl": lambda x: re.search(r'#[a-f0-9]{6}',x) is not None,
+    "hgt": checkHeight,
+    "hcl": lambda x: re.match(r'^#[\da-f]{6}$',x),
     "ecl": lambda x: x in ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"],
-    "pid": lambda x: re.search(r'\d{9}',x) is not None,
+    "pid": lambda x: re.match(r'^\d{9}$',x),
     "cid": lambda x: True
 }
 
 def count2(data, vf=valid_fields2):
-    invalid = 0
     total = 0
     p = ""
     for l in data:
@@ -49,11 +47,10 @@ def count2(data, vf=valid_fields2):
             p += " "+l
         else:
             person = str_to_person(p)
-            if not validate_person(person, vf):
-                invalid += 1
+            if validate_person(person, vf):
+                total += 1
             p=""
-            total += 1
-    return total - invalid
+    return total
 
 
 if __name__ == '__main__':
